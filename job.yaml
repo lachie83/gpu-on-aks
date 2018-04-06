@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  labels:
+    app: tf-mnist
+  name: tf-mnist
+spec:
+  template:
+    metadata:
+      labels:
+        app: tf-mnist
+    spec:
+      containers:
+      - name: tf-mnist
+        image: lachlanevenson/tf-mnist:gpu
+        args: ["--max_steps", "500"]
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            alpha.kubernetes.io/nvidia-gpu: 1
+        volumeMounts:
+        - name: nvidia
+          mountPath: /usr/local/nvidia
+      restartPolicy: OnFailure
+      volumes:
+        - name: nvidia
+          hostPath:
+            path: /usr/local/nvidia
+            
